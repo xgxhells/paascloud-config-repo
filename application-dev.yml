@@ -100,7 +100,7 @@ hystrix:
             timeoutInMilliseconds: 20000
 
 info:
-  开发环境
+  配置环境: 开发环境
 
 paascloud:
   auth:
