@@ -4,6 +4,8 @@ spring:
   jackson:
     joda-date-time-format: yyyy-MM-dd HH:mm:ss
     date-format: yyyy-MM-dd HH:mm:ss
+  cache:
+    cache-names: admin-cache
   datasource:
     url: jdbc:mysql://paascloud-db-mysql:3306/nb_smart_lock?characterEncoding=utf8&useSSL=false
     initialSize: 5
@@ -20,7 +22,7 @@ spring:
     logSlowSql: true
 
 mybatis:
-  type-aliases-package: com.paascloud.provider.model.domain
+  type-aliases-package: com.paascloud.provider.model.domain,com.paascloud.provider.model.entity
   mapper-locations: classpath:mapper/*.xml,classpath*:sdk/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
@@ -50,25 +52,27 @@ security:
       access-token-uri: http://paascloud-gateway:7979/uac/oauth/token
       user-authorization-uri: http://paascloud-gateway:7979/uac/oauth/authorize
     resource:
-      user-info-uri: http://paascloud-gateway:7979/uac/user
-      prefer-token-info: false
-      jwt:
-        key-uri: http://paascloud-provider-uac:8000/oauth/token_key
+       user-info-uri: http://paascloud-gateway:7979/uac/user
+       prefer-token-info: false
+       jwt:
+         key-uri: http://paascloud-provider-uac:8000/oauth/token_key
 
 paascloud:
   enableSqlLogInterceptor: false
+  zk:
+      zkAddressList: paascloud-provider-zk:2181
   aliyun:
     rocketMq:
       enable: true
       reliableMessageConsumer: false
       reliableMessageProducer: true
       instanceName: paascloud-provider-admin
-      consumerGroup: CID_UAC
-      producerGroup: PID_UAC
+      consumerGroup: CID_ADMIN
+      producerGroup: PID_ADMIN
   auth:
     rest-pwd-url: http://dev-login.paascloud.net/resetPwd?resetPwdKey=
-    active-user-url: http://dev-api.paascloud.net:7979/admin/auth/activeUser/
-    refresh-token-url: http://dev-api.paascloud.net:7979/admin/oauth/token
+    active-user-url: http://dev-api.paascloud.net:7979/uac/auth/activeUser/
+    refresh-token-url: http://dev-api.paascloud.net:7979/uac/oauth/token
   token:
     interceptor:
       enable: true
@@ -97,54 +101,16 @@ paascloud:
         url: /auth/register,/auth/submitResetPwdEmail,/auth/code/sms
       sms:
         expireIn: 600
-        url: /admin/auth/submitResetPwdPhone
+        url: /uac/auth/submitResetPwdPhone
         mobileMaxSendCount: 1
         ipMaxSendCount: 2
         totalMaxSendCount: 3
     oauth2:
-      tokenStore: jwt
-      clients[0]:
-        clientId: paascloud-client-uac
-        clientSecret: paascloudClientSecret
-        accessTokenValidateSeconds: 7200
-        scope: "*"
-      clients[1]:
-        clientId: paascloud-browser
-        clientSecret: paascloudClientSecret
-        accessTokenValidateSeconds: 7200
-        scope: "*"
-      clients[2]:
-        clientId: paascloud-client-gateway
-        clientSecret: paascloudClientSecret
-        accessTokenValidateSeconds: 7200
-        scope: "*"
-      clients[3]:
-        clientId: paascloud-client-zipkin
-        clientSecret: paascloudClientSecret
-        accessTokenValidateSeconds: 7200
-        scope: "*"
-      clients[4]:
-        clientId: paascloud-client-mdc
-        clientSecret: paascloudClientSecret
-        accessTokenValidateSeconds: 7200
-        scope: "*"
-      clients[5]:
-        clientId: paascloud-client-omc
-        clientSecret: paascloudClientSecret
-        accessTokenValidateSeconds: 7200
-        scope: "*"
-      clients[6]:
-        clientId: paascloud-client-opc
-        clientSecret: paascloudClientSecret
-        accessTokenValidateSeconds: 7200
-        scope: "*"
-      clients[7]:
-        clientId: paascloud-client-tpc
-        clientSecret: paascloudClientSecret
-        accessTokenValidateSeconds: 7200
-        scope: "*"
-      clients[8]:
-      clientId: paascloud-client-admin
-      clientSecret: paascloudClientSecret
-      accessTokenValidateSeconds: 7200
-      scope: "*"
+     jwtSigningKey: paascloud
+     client:
+       id: ${security.oauth2.resource.id}
+       accessTokenUrl: ${security.oauth2.client.access-token-uri}
+       clientId: ${security.oauth2.client.clientId}
+       clientSecret: ${security.oauth2.client.clientSecret}
+       clientAuthenticationScheme: header
+       tokenStore: jwt
