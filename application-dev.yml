@@ -19,7 +19,7 @@ spring:
     password: guest
   redis:
     host: paascloud-db-redis
-    password: 
+    password: 123456
     port: 6379
     timeout: 0
   datasource:
@@ -39,9 +39,9 @@ spring:
         login-username: admin
         login-password: admin
   mail:
-    host: smtp.163.com
-    username: paascloudTest@163.com
-    password: a123456
+    host: smtp.qq.com
+    username: 1519143282@qq.com
+    password: abc123456d
     port: 465
     protocol: smtp
     test-connection: false
