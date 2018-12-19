@@ -88,18 +88,6 @@ zuul:
         OkToRetryOnAllOperations: false
         ConnectTimeout: 10000
         ReadTimeout: 10000
-    admin-route:
-      path: /admin/**
-      sensitiveHeaders:
-      service-id: paascloud-provider-admin
-      ribbon:
-        eager-load:
-          enabled: true
-        MaxAutoRetries: 1
-        MaxAutoRetriesNextServer: 2
-        OkToRetryOnAllOperations: false
-        ConnectTimeout: 10000
-        ReadTimeout: 10000    
   add-proxy-headers: true
   add-host-header: true
 
